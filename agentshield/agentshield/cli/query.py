@@ -1,0 +1,1 @@
+"""Query logic is in agentshield.cli.main — this module reserved for future expansion."""

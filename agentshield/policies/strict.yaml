@@ -1,0 +1,56 @@
+# ============================================================
+# AgentShield — Strict Security Policy
+# ============================================================
+# Maximum security.  Only explicitly allowed tools pass.
+# Use in regulated environments (healthcare, finance, etc.).
+# ============================================================
+
+version: "1.0"
+name: "strict-policy"
+description: "Maximum security — explicit allowlisting only"
+
+default_action: deny
+
+agents:
+  default:
+    allowed_tools:
+      - "web_search"
+      - "calculator"
+    denied_tools:
+      - "execute_*"
+      - "delete_*"
+      - "drop_*"
+      - "admin_*"
+      - "sudo_*"
+      - "*_write"
+      - "*_update"
+      - "*_shell"
+    rate_limits:
+      "*":
+        max_calls: 30
+        window_seconds: 60
+
+tools:
+  read_file:
+    denied_paths:
+      - "**/*"   # Block ALL file reads in strict mode
+
+detectors:
+  prompt_injection:
+    enabled: true
+    action: deny
+  pii_scanner:
+    enabled: true
+    action: deny      # Deny (not just redact) if PII found
+  command_injection:
+    enabled: true
+    action: deny
+  data_exfiltration:
+    enabled: true
+    action: deny
+  tool_poisoning:
+    enabled: true
+    action: deny
+
+alerts:
+  enabled: false

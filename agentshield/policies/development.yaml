@@ -1,0 +1,45 @@
+# ============================================================
+# AgentShield — Development Policy
+# ============================================================
+# Permissive — allows most tools but still runs all detectors.
+# Good for local development and testing.
+# ============================================================
+
+version: "1.0"
+name: "development-policy"
+description: "Permissive policy for local development"
+
+default_action: allow
+
+agents:
+  default:
+    allowed_tools: []    # Empty = allow all (when default_action is allow)
+    denied_tools:
+      - "delete_*"
+      - "drop_*"
+    rate_limits:
+      "*":
+        max_calls: 500
+        window_seconds: 60
+
+tools: {}
+
+detectors:
+  prompt_injection:
+    enabled: true
+    action: deny
+  pii_scanner:
+    enabled: true
+    action: redact
+  command_injection:
+    enabled: true
+    action: deny
+  data_exfiltration:
+    enabled: true
+    action: deny
+  tool_poisoning:
+    enabled: true
+    action: deny
+
+alerts:
+  enabled: false

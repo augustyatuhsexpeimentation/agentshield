@@ -1,0 +1,141 @@
+# ============================================================
+# AgentShield — Default Security Policy
+# ============================================================
+# Balanced policy for production use.
+# Blocks dangerous operations while allowing common tool access.
+#
+# Environment variables are supported: ${MY_VAR}
+# Wildcards are supported in tool names: "delete_*", "*_write"
+# ============================================================
+
+version: "1.0"
+name: "default-policy"
+description: "Balanced security policy for production AI agents"
+
+# What happens when no rule matches.  "deny" = zero-trust.
+default_action: deny
+
+# ── Agent permissions ───────────────────────────────
+agents:
+
+  # Applies to any agent_id not listed below
+  default:
+    allowed_tools:
+      - "web_search"
+      - "read_file"
+      - "calculator"
+      - "get_weather"
+      - "search_database"
+    denied_tools:
+      - "execute_shell"
+      - "execute_command"
+      - "delete_*"
+      - "drop_*"
+      - "admin_*"
+      - "sudo_*"
+    rate_limits:
+      "*":
+        max_calls: 100
+        window_seconds: 60
+      "web_search":
+        max_calls: 20
+        window_seconds: 60
+      "search_database":
+        max_calls: 30
+        window_seconds: 60
+
+  # Example: a research agent with read-only access
+  research_agent:
+    allowed_tools:
+      - "web_search"
+      - "read_file"
+      - "pubmed_search"
+      - "arxiv_search"
+    denied_tools:
+      - "*_write"
+      - "*_delete"
+      - "*_update"
+      - "execute_*"
+    rate_limits:
+      "*":
+        max_calls: 50
+        window_seconds: 60
+
+# ── Tool-specific argument rules ────────────────────
+tools:
+
+  read_file:
+    allowed_paths:
+      - "/data/**"
+      - "/tmp/**"
+      - "./data/**"
+    denied_paths:
+      - "/etc/**"
+      - "**/.env"
+      - "**/.env.*"
+      - "**/.ssh/**"
+      - "**/.aws/**"
+      - "**/credentials*"
+      - "**/*.pem"
+      - "**/*.key"
+      - "**/shadow"
+      - "**/passwd"
+
+  execute_shell:
+    allowed_commands:
+      - "ls"
+      - "cat"
+      - "grep"
+      - "echo"
+      - "date"
+      - "whoami"
+    denied_patterns:
+      - "rm -rf"
+      - "curl * | bash"
+      - "wget"
+      - "> /dev/"
+      - "chmod 777"
+      - "mkfs"
+      - "dd if="
+      - "shutdown"
+      - "reboot"
+
+  search_database:
+    denied_operations:
+      - "DROP"
+      - "DELETE"
+      - "TRUNCATE"
+      - "ALTER"
+      - "INSERT"
+      - "UPDATE"
+      - "GRANT"
+      - "REVOKE"
+    max_rows_returned: 1000
+
+# ── Security detector settings ──────────────────────
+detectors:
+
+  prompt_injection:
+    enabled: true
+    action: deny
+
+  pii_scanner:
+    enabled: true
+    action: redact
+
+  command_injection:
+    enabled: true
+    action: deny
+
+  data_exfiltration:
+    enabled: true
+    action: deny
+
+  tool_poisoning:
+    enabled: true
+    action: deny
+
+# ── Alerting (V2) ──────────────────────────────────
+alerts:
+  enabled: false
+  channels: []
