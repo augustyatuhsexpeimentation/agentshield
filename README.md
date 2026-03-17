@@ -1,4 +1,4 @@
-# agentshield# 🛡️ AgentShield
+#🛡️ AgentShield
 
 **Security firewall for AI agents. Stop prompt injection, data exfiltration, and unauthorized tool access — before they happen.**
 
