@@ -1,0 +1,28 @@
+#Example: Read-only agent — can search and read but never write or delete
+version: "1.0"
+name: "read-only"
+default_action: deny
+
+agents:
+  default:
+    allowed_tools:
+      - "web_search"
+      - "read_file"
+      - "search_database"
+    denied_tools:
+      - "*_write"
+      - "*_delete"
+      - "*_update"
+      - "*_create"
+      - "execute_*"
+
+tools:
+  search_database:
+    denied_operations: ["INSERT", "UPDATE", "DELETE", "DROP", "ALTER", "TRUNCATE"]
+
+detectors:
+  prompt_injection: { enabled: true }
+  pii_scanner: { enabled: true }
+  command_injection: { enabled: true }
+  data_exfiltration: { enabled: true }
+  tool_poisoning: { enabled: true }

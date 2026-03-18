@@ -1,0 +1,17 @@
+# Example: Block any request containing PII — zero tolerance
+version: "1.0"
+name: "block-pii"
+default_action: allow
+
+agents:
+  default:
+    denied_tools: ["execute_*", "delete_*"]
+
+detectors:
+  prompt_injection: { enabled: true }
+  pii_scanner:
+    enabled: true
+    action: deny    # Block entirely, don't just redact
+  command_injection: { enabled: true }
+  data_exfiltration: { enabled: true }
+  tool_poisoning: { enabled: true }

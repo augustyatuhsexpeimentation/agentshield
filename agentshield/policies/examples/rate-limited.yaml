@@ -1,0 +1,25 @@
+#Example: Aggressive rate limiting for untrusted agents
+version: "1.0"
+name: "rate-limited"
+default_action: allow
+
+agents:
+  default:
+    denied_tools: ["execute_*", "delete_*"]
+    rate_limits:
+      "*":
+        max_calls: 10
+        window_seconds: 60
+      "web_search":
+        max_calls: 5
+        window_seconds: 60
+      "search_database":
+        max_calls: 3
+        window_seconds: 60
+
+detectors:
+  prompt_injection: { enabled: true }
+  pii_scanner: { enabled: true }
+  command_injection: { enabled: true }
+  data_exfiltration: { enabled: true }
+  tool_poisoning: { enabled: true }
