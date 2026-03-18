@@ -2,7 +2,6 @@
 
 **Security firewall for AI agents. Stop prompt injection, data exfiltration, and unauthorized tool access — before they happen.**
 
-[![CI](https://github.com/augustyatuhsexpeimentation/agentshield/actions/workflows/ci.yml/badge.svg)](https://github.com/augustyatuhsexpeimentation/agentshield/actions)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-green.svg)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/agentshield)](https://pypi.org/project/agentshield/)
